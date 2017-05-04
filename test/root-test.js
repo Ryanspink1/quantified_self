@@ -33,4 +33,24 @@ describe('Server', () => {
     });
   });
 
+  describe('GET /api/v1/foods', function(){
+    it('should return a 200', function(done){
+      this.request.get('/api/v1/foods', function(error, response){
+        if (error) { return done(error) }
+        assert.equal(response.statusCode, 200);
+        done();
+      });
+    });
+  });
+
+  describe('GET /api/v1/foods/:id', function(){
+    it('should return a 200', function(done){
+      this.request.get('/api/v1/foods/1', function(error, response){
+        if (error) { return done(error) }
+        assert.equal(response.statusCode, 200);
+        assert(response.body.includes('1'));
+        done();
+      });
+    });
+  });
 });
