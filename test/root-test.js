@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 const request = require('request');
 const app = require('../server');
 
-const environment = process.env.NODE_ENV || 'development';
+const environment = process.env.NODE_ENV || 'test';
 const configuration = require('../knexfile')[environment];
 const database = require('knex')(configuration);
 
@@ -47,7 +47,7 @@ describe('Server', () => {
     });
   });
 
-  describe('GET /api/v1/foods/:id', () => {
+  it('GET /api/v1/foods/:id', () => {
     beforeEach((done) => {
       database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)', ['steak', 500, new Date])
       .then(()=> {
@@ -58,14 +58,16 @@ describe('Server', () => {
       database.raw('TRUNCATE foods RESTART IDENTITY')
       .then(() => done());
     })
-    xit('should return a 404 if the resource is not found', (done) => {
+
+    it('should return a 404 if the resource is not found', (done) => {
       this.request.get('/api/v1/foods/10000', (error, response) => {
         if (error) { done(error) }
         assert.equal(response.statusCode, 404)
         done()
       })
     })
-    xit('should have the id and the message from the resource', (done) => {
+
+    it('should have the id and the message from the resource', (done) => {
       this.request.get('/api/v1/foods/1', (error, response) => {
         if (error) { done(error) }
         const id = 1
@@ -92,4 +94,43 @@ describe('Server', () => {
   //     });
   //   });
   });
+
+  // describe('POST /api/v1/foods', () => {
+  //   it('should not return a 404', (done) => {
+  //     this.request.post('/api/v1/foods', (error, response) => {
+  //       if (error) { done(error) }
+  //
+  //       assert.notEqual(response.statusCode, 404)
+  //
+  //       done()
+  //     })
+  //   })
+  //
+  //   it('should receive and store data', (done) => {
+  //     const food = {
+  //       name: 'milkshake',
+  //       calories: 600
+  //     }
+  //
+  //     this.request.post('/api/v1/foods', { form: food }, (error, response) => {
+  //       if (error) { done(error) }
+  //
+  //       const id      = 1
+  //       const name = "milkshake"
+  //       const calories = 600
+  //
+  //       let parsedFood = JSON.parse(response.body)
+  //
+  //       assert.equal(parsedFood.id, id)
+  //       assert.equal(parsedFood.name, name)
+  //       assert.equal(parsedFood.calories, calories)
+  //       assert.ok(parsedFood.created_at)
+  //
+  //       done()
+  //     })
+  //   })
+
+
+
+
 });

@@ -18,10 +18,9 @@ app.get('/api/v1/foods', (request, response) =>{
   response.send('This is the index')
 });
 
-app.get('/api/v1/foods/:id', (request, response) => {
-  FoodsController.show(request, response)
-});
+app.get('/api/v1/foods/:id', FoodsController.show)
 
+// app.post('')
 
 
 
