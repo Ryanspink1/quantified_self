@@ -20,9 +20,7 @@ app.get('/api/v1/foods', (request, response) =>{
 
 app.get('/api/v1/foods/:id', FoodsController.show)
 
-// app.post('')
-
-
+app.post('/api/v1/foods', FoodsController.create)
 
 if(!module.parent){
   app.listen(app.get('port'), () => {
