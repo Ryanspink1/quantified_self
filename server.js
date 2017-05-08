@@ -1,7 +1,11 @@
 pry = require('pryjs')
 
-var express = require('express')
-var app = express()
+const express = require('express')
+const app = express()
+// const bodyParser = require('body-parser')
+// const md5 = require('md5')
+
+const FoodsController = require('./lib/controllers/foods-controller')
 
 app.set('port', process.env.PORT || 3000)
 app.locals.title = 'Quantified Self'
@@ -15,12 +19,7 @@ app.get('/api/v1/foods', (request, response) =>{
 });
 
 app.get('/api/v1/foods/:id', (request, response) => {
-  // eval(pry.it)
-  var id = request.params.id;
-  // if(typeof id !== 'number'){return response.sendStatus(404)};
-  response.json({
-    id: id
-  });
+  FoodsController.show(request, response)
 });
 
 

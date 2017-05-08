@@ -1,6 +1,10 @@
-var assert = require('chai').assert;
-var request = require('request');
-var app = require('../server');
+const assert = require('chai').assert;
+const request = require('request');
+const app = require('../server');
+
+const environment = process.env.NODE_ENV || 'development';
+const configuration = require('../knexfile')[environment];
+const database = require('knex')(configuration);
 
 describe('Server', () => {
   before(function(done){
@@ -43,14 +47,49 @@ describe('Server', () => {
     });
   });
 
-  describe('GET /api/v1/foods/:id', function(){
-    it('should return a 200', function(done){
-      this.request.get('/api/v1/foods/1', function(error, response){
-        if (error) { return done(error) }
-        assert.equal(response.statusCode, 200);
-        assert(response.body.includes('1'));
-        done();
-      });
-    });
+  describe('GET /api/v1/foods/:id', () => {
+    beforeEach((done) => {
+      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)', ['steak', 500, new Date])
+      .then(()=> {
+        done()
+      })
+    })
+    afterEach((done) => {
+      database.raw('TRUNCATE foods RESTART IDENTITY')
+      .then(() => done());
+    })
+    xit('should return a 404 if the resource is not found', (done) => {
+      this.request.get('/api/v1/foods/10000', (error, response) => {
+        if (error) { done(error) }
+        assert.equal(response.statusCode, 404)
+        done()
+      })
+    })
+    xit('should have the id and the message from the resource', (done) => {
+      this.request.get('/api/v1/foods/1', (error, response) => {
+        if (error) { done(error) }
+        const id = 1
+        const name = 'steak'
+        const calories = 500
+        let parsedFood = JSON.parse(response.body)
+        assert.equal(parsedFood.id, id)
+        assert.equal(parsedFood.name, name)
+        assert.equal(parsedFood.calories, calories)
+        assert.ok(parsedFood.created_at)
+        done()
+      })
+    })
+  // })
+    // stop
+
+  // describe('GET /api/v1v1/foods/:id', function(){
+  //   it('should return a 200', function(done){
+  //     this.request.get('/api/v1v1/foods/1', function(error, response){
+  //       if (error) { return done(error) }
+  //       assert.equal(response.statusCode, 200);
+  //       assert(response.body.includes('1'));
+  //       done();
+  //     });
+  //   });
   });
 });
