@@ -25,6 +25,8 @@ app.get('/api/v1/foods/:id', FoodsController.show);
 
 app.post('/api/v1/foods', FoodsController.create);
 
+app.delete('/api/v1/foods/:id', FoodsController.destroy);
+
 
 
 
