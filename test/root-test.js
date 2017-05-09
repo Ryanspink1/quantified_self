@@ -189,7 +189,7 @@ describe('Server', () => {
 
   // DELETE TEST
 
-  describe('DELETE /api/v1/foods', function(){
+  describe('DELETE /api/v1/foods:id/', function(){
     beforeEach(function(done){
       database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
         ["Steak", 500, new Date])
@@ -250,6 +250,43 @@ describe('Server', () => {
       // })
     })
   })
+
+  //UPDATE TEST
+
+  describe('UPDATE /api/v1/foods/:id', function(){
+    beforeEach(function(done){
+      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
+        ["Steak", 500, new Date])
+      .then(database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
+        ["Ham", 400, new Date]))
+      .then(function(){
+        done();
+      });
+    });
+
+    afterEach(function(done){
+      database.raw('TRUNCATE foods RESTART IDENTITY')
+      .then(function(){
+        done();
+      });
+    });
+
+    it('should return 200', function(done){
+      var food_params = {name: 'bordelaise', calories: 800}
+      this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
+        if (error) { return done(error) }
+        assert.equal(response.statusCode, 200);
+        done();
+      });
+    });
+
+
+
+  })
+
+
+
+
 
 
 

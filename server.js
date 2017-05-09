@@ -27,8 +27,7 @@ app.post('/api/v1/foods', FoodsController.create);
 
 app.delete('/api/v1/foods/:id', FoodsController.destroy);
 
-
-
+app.patch('/api/v1/foods/:id', FoodsController.update);
 
 if(!module.parent){
   app.listen(app.get('port'), () => {
