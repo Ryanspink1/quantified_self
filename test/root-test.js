@@ -187,6 +187,127 @@ describe('Server', () => {
     })
   });
 
+  // DELETE TEST
+
+  describe('DELETE /api/v1/foods:id/', function(){
+    beforeEach(function(done){
+      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
+        ["Steak", 500, new Date])
+      .then(database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
+        ["Ham", 400, new Date]))
+      .then(function(){
+        done();
+      });
+    });
+
+    afterEach(function(done){
+      database.raw('TRUNCATE foods RESTART IDENTITY')
+      .then(function(){
+        done();
+      });
+    });
+
+    it('should return 200', function(done){
+      var food_params = { id: 2, name: 'Ham', calories: 400}
+      this.request.delete('/api/v1/foods/2', function(error, response) {
+        if (error) { return done(error) }
+        assert.equal(response.statusCode, 200);
+        done();
+      });
+    });
+
+    it('should delete the item', function(done){
+      var food_params = { id: 2, name: 'Ham', calories: 400}
+      this.request.delete('/api/v1/foods/2', function(error, response) {
+      })
+        this.request.get('/api/v1/foods', function(error, response){
+          if(error){ done(error) }
+
+          var idOne = 1;
+          var nameOne = 'Steak';
+          var idTwo = 2;
+          var nameTwo = 'Ham';
+          var caloriesOne = 500;
+          var caloriesTwo = 400;
+          let parsedFoods = JSON.parse(response.body.toString());
+
+          // assert.equal( parsedFoods[0].id, idOne);
+          // assert.equal( parsedFoods[1].id, idTwo);
+          // assert.notEqual(parsedFoods[0].id, parsedFoods[1].id);
+          //
+          // assert.equal( parsedFoods[0].name, nameOne);
+          // assert.equal( parsedFoods[1].name, nameTwo);
+          // assert.notEqual(parsedFoods[0].name, parsedFoods[1].name);
+          //
+          // assert.equal( parsedFoods[0].calories, caloriesOne);
+          // assert.equal( parsedFoods[1].calories, caloriesTwo);
+          // assert.notEqual(parsedFoods[0].calories, parsedFoods[1].calories);
+
+          assert.isOk(parsedFoods[0])
+          assert.isNotOk(parsedFoods[1])
+          done();
+        })
+      // })
+    })
+  })
+
+  //UPDATE TEST
+
+  describe('UPDATE /api/v1/foods/:id', function(){
+    beforeEach(function(done){
+      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
+        ["Steak", 500, new Date])
+      .then(database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
+        ["Ham", 400, new Date]))
+      .then(function(){
+        done();
+      });
+    });
+
+    afterEach(function(done){
+      database.raw('TRUNCATE foods RESTART IDENTITY')
+      .then(function(){
+        done();
+      });
+    });
+
+    it('should return 200', function(done){
+      var food_params = {name: 'bordelaise', calories: 800}
+      this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
+        if (error) { return done(error) }
+        assert.equal(response.statusCode, 200);
+        done();
+      });
+    });
+
+    xit('should return 404 if nothing is entered', function(done){
+      var food_params = {name: 'bordelaise', calories: 800}
+      this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
+        if (error) { return done(error) }
+        assert.equal(response.statusCode,404);
+        done();
+      });
+    });
+
+    it('should update an item', function(done){
+      var food_params = {name: 'bordelaise', calories: 800}
+      this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
+        if (error) { return done(error) }
+        let parsedFood = JSON.parse(response.body.toString());
+        assert.equal(parsedFood.name, food_params.name);
+        assert.equal(parsedFood.calories, food_params.calories);
+        done();
+      });
+    });
+
+
+
+  })
+
+
+
+
+
 
 
 });
