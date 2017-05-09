@@ -280,6 +280,26 @@ describe('Server', () => {
       });
     });
 
+    xit('should return 404 if nothing is entered', function(done){
+      var food_params = {name: 'bordelaise', calories: 800}
+      this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
+        if (error) { return done(error) }
+        assert.equal(response.statusCode,404);
+        done();
+      });
+    });
+
+    it('should update an item', function(done){
+      var food_params = {name: 'bordelaise', calories: 800}
+      this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
+        if (error) { return done(error) }
+        let parsedFood = JSON.parse(response.body.toString());
+        assert.equal(parsedFood.name, food_params.name);
+        assert.equal(parsedFood.calories, food_params.calories);
+        done();
+      });
+    });
+
 
 
   })
