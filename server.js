@@ -19,9 +19,7 @@ app.get('/', (request, response) => {
   response.send('Welcome to Quantified Self!')
 });
 
-app.get('/api/v1/foods', (request, response) =>{
-  response.send('This is the index')
-});
+app.get('/api/v1/foods', FoodsController.index);
 
 app.get('/api/v1/foods/:id', FoodsController.show);
 

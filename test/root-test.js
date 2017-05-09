@@ -43,13 +43,66 @@ describe('Server', () => {
   // INDEX TEST
 
   describe('GET /api/v1/foods', function(){
-    it('should return a 200', function(done){
+    beforeEach(function(done){
+      Promise.all([
+        database.raw(
+          'INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
+          ["Steak", 500, new Date]
+        ),
+        database.raw(
+          'INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
+          ["Chimichangas", 1000,new Date]
+        )
+      ])
+      .then(function(){
+        done();
+      });
+    });
+
+    afterEach(function(done){
+      database.raw('TRUNCATE foods RESTART IDENTITY')
+      .then(function(){
+        done();
+      });
+    });
+
+    it('should return a 200 if the response is found', function(done){
       this.request.get('/api/v1/foods', function(error, response){
-        if (error) { return done(error) }
+        if(error){ done(error) }
         assert.equal(response.statusCode, 200);
         done();
       });
     });
+
+    it('should return all parameters for all food items', function(done){
+      this.request.get('/api/v1/foods', function(error, response){
+        if(error){ done(error) }
+
+        var idOne = 1;
+        var nameOne = 'Steak';
+        var idTwo = 2;
+        var nameTwo = 'Chimichangas';
+        var caloriesOne = 500;
+        var caloriesTwo = 1000;
+        let parsedFoods = JSON.parse(response.body.toString());
+
+        assert.equal( parsedFoods[0].id, idOne);
+        assert.equal( parsedFoods[1].id, idTwo);
+        assert.notEqual(parsedFoods[0].id, parsedFoods[1].id);
+
+        assert.equal( parsedFoods[0].name, nameOne);
+        assert.equal( parsedFoods[1].name, nameTwo);
+        assert.notEqual(parsedFoods[0].name, parsedFoods[1].name);
+
+        assert.equal( parsedFoods[0].calories, caloriesOne);
+        assert.equal( parsedFoods[1].calories, caloriesTwo);
+        assert.notEqual(parsedFoods[0].calories, parsedFoods[1].calories);
+
+        assert.ok(parsedFoods[0].created_at)
+        assert.ok(parsedFoods[1].created_at)
+        done();
+      })
+    })
   });
 
  // SHOW TEST
