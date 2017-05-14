@@ -6,8 +6,11 @@ var md5 = require('md5')
 var FoodsController = require('./lib/controllers/foods-controller')
 
 var environment   = process.env.NODE_ENV || 'development'
-var configuration = require('./knexfile')[environment]
-var database      = require('knex')(configuration)
+var configuration = require('./knexfile')[environment];
+var database      = require('knex')(configuration);
+const cors = require('cors');
+
+app.use(cors({origin: '*'}));
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
