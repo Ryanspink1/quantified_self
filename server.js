@@ -35,6 +35,8 @@ app.patch('/api/v1/foods/:id', FoodsController.update);
 
 app.post('/api/v1/meal_diaries', MealDiariesController.create);
 
+app.get('/api/v1/meal_diaries', MealDiariesController.index);
+
 
 if(!module.parent){
   app.listen(app.get('port'), () => {
