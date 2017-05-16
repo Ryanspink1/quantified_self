@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   let createQuery = `CREATE TABLE diaries(
     id SERIAL PRIMARY KEY NOT NULL,
-    date DATE,
+    date DATE UNIQUE,
     total_calories INTEGER,
     created_at TIMESTAMP
   )`;
@@ -12,4 +12,4 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   let dropQuery = `DROP TABLE diaries`;
   return knex.raw(dropQuery);
-};  
+};
