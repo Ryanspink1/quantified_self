@@ -3,8 +3,10 @@ var express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
 var md5 = require('md5')
+
 var FoodsController = require('./lib/controllers/foods-controller')
 var MealDiariesController = require('./lib/controllers/meal-diaries-controller')
+var DiariesController = require('./lib/controllers/diaries-controller')
 
 var environment   = process.env.NODE_ENV || 'development'
 var configuration = require('./knexfile')[environment];
@@ -33,9 +35,13 @@ app.delete('/api/v1/foods/:id', FoodsController.destroy);
 
 app.patch('/api/v1/foods/:id', FoodsController.update);
 
+
 app.post('/api/v1/meal_diaries', MealDiariesController.create);
 
 app.get('/api/v1/meal_diaries', MealDiariesController.index);
+
+
+app.post('/api/v1/diaries', DiariesController.create);
 
 
 if(!module.parent){

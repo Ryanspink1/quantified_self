@@ -1,6 +1,7 @@
 
 exports.up = function(knex, Promise) {
   let createQuery = `CREATE TABLE meal_diaries(
+
     id SERIAL PRIMARY KEY NOT NULL,
     food_id INTEGER,
     diary_id INTEGER,
