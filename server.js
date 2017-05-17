@@ -40,6 +40,8 @@ app.post('/api/v1/meal_diaries', MealDiariesController.create);
 
 app.get('/api/v1/meal_diaries', MealDiariesController.index);
 
+app.patch('/api/v1/meal_diaries', MealDiariesController.destroy);
+
 
 app.post('/api/v1/diaries', DiariesController.create);
 
