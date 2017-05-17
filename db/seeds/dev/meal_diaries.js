@@ -1,5 +1,5 @@
 exports.seed = function(knex, Promise) {
-  return knex.raw('')
+  return knex.raw('TRUNCATE meal_diaries RESTART IDENTITY')
   .then(() => {
     return Promise.all([
       // knex.raw('INSERT INTO meal_diaries (food_id, diary_id, meal_id, created_at) VALUES(?,?,?,?)', [ 1 , 1, 1, new Date ]),
