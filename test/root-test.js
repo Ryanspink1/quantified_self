@@ -46,12 +46,12 @@ describe('Server', () => {
     beforeEach(function(done){
       Promise.all([
         database.raw(
-          'INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
-          ["Steak", 500, new Date]
+          'INSERT INTO foods (name, visible, calories, created_at) VALUES (?, ?, ?,?)',
+          ["Steak","true", 500, new Date]
         ),
         database.raw(
-          'INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
-          ["Chimichangas", 1000,new Date]
+          'INSERT INTO foods (name, visible,calories, created_at) VALUES (?, ?, ?,?)',
+          ["Chimichangas", "true", 1000, new Date]
         )
       ])
       .then(function(){
@@ -191,10 +191,10 @@ describe('Server', () => {
 
   describe('DELETE /api/v1/foods:id/', function(){
     beforeEach(function(done){
-      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
-        ["Steak", 500, new Date])
-      .then(database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
-        ["Ham", 400, new Date]))
+      database.raw('INSERT INTO foods (name, visible, calories, created_at) VALUES (?, ?, ?, ?)',
+        ["Steak","true", 500, new Date])
+      .then(database.raw('INSERT INTO foods (name, visible, calories, created_at) VALUES (?, ?, ?, ?)',
+        ["Ham","true", 400, new Date]))
       .then(function(){
         done();
       });
@@ -255,10 +255,10 @@ describe('Server', () => {
 
   describe('UPDATE /api/v1/foods/:id', function(){
     beforeEach(function(done){
-      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
-        ["Steak", 500, new Date])
-      .then(database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)',
-        ["Ham", 400, new Date]))
+      database.raw('INSERT INTO foods (name,visible, calories, created_at) VALUES (?, ?, ?, ?)',
+        ["Steak","true", 500, new Date])
+      .then(database.raw('INSERT INTO foods (name,visible, calories, created_at) VALUES (?, ?, ?, ?)',
+        ["Ham","true", 400, new Date]))
       .then(function(){
         done();
       });
@@ -272,7 +272,7 @@ describe('Server', () => {
     });
 
     it('should return 200', function(done){
-      var food_params = {name: 'bordelaise', calories: 800}
+      var food_params = {name: 'bordelaise',visible:true, calories: 800}
       this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
         if (error) { return done(error) }
         assert.equal(response.statusCode, 200);
@@ -281,7 +281,7 @@ describe('Server', () => {
     });
 
     xit('should return 404 if nothing is entered', function(done){
-      var food_params = {name: 'bordelaise', calories: 800}
+      var food_params = {name: 'bordelaise',visible:true, calories: 800}
       this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
         if (error) { return done(error) }
         assert.equal(response.statusCode,404);
@@ -290,7 +290,7 @@ describe('Server', () => {
     });
 
     it('should update an item', function(done){
-      var food_params = {name: 'bordelaise', calories: 800}
+      var food_params = {id:1, name: 'bordelaise',visible:true, calories: 800}
       this.request.patch('/api/v1/foods/1', {form: food_params}, function(error, response) {
         if (error) { return done(error) }
         let parsedFood = JSON.parse(response.body.toString());
